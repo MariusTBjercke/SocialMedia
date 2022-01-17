@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SocialMedia
 {
-    public class Person
+    internal class Person
     {
         public string FirstName;
         public string LastName;
