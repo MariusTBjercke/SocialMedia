@@ -11,7 +11,7 @@ namespace SocialMedia
         {
             Console.OutputEncoding = Encoding.UTF8;
             App.Name = "Fjøsboka";
-            App.Users.AddRange(new List<Person>
+            App.Users.AddRange(new List<Person>()
             {
                 new Person("Kenneth", "M", 25, "Veien203", false),
                 new Person("Marius", "B", 28, "Vegen200002", false),
@@ -44,10 +44,9 @@ namespace SocialMedia
             {
                 var userIndex = App.Users.FindIndex(x => x.Name.ToLower() == userInput);
                 App.CurrentUser = App.Users[userIndex];
-                var currentUser = App.CurrentUser;
                 App.CurrentUser.Online = true;
                 App.LoggedIn = true;
-                Console.WriteLine($"Du er nå logget inn som {currentUser.Name}");
+                Console.WriteLine($"Du er nå logget inn som {App.CurrentUser.Name}");
             }
             else
             {
