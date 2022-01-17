@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace SocialMedia
@@ -10,9 +11,12 @@ namespace SocialMedia
         {
             Console.OutputEncoding = Encoding.UTF8;
             App.Name = "Fjøsboka";
-            App.Users.Add(new Person("Kenneth", "M", 25, "Veien203", false));
-            App.Users.Add(new Person("Marius", "B", 28, "Vegen200002", false));
-            App.Users.Add(new Person("John", "T", 30, "Kongevegen", false));
+            App.Users.AddRange(new List<Person>
+            {
+                new Person("Kenneth", "M", 25, "Veien203", false),
+                new Person("Marius", "B", 28, "Vegen200002", false),
+                new Person("John", "T", 30, "Kongevegen", false),
+            });
 
             Console.WriteLine($"Velkommen til {App.Name}. Hvilken bruker vil du logge deg inn på?");
             
@@ -28,6 +32,7 @@ namespace SocialMedia
                 if (userInput == "vis venner") App.CurrentUser.PrintFriends();
                 if (userInput == "legg til venn") App.CurrentUser.AddFriend();
                 if (userInput == "slett venn") App.CurrentUser.RemoveFriend();
+                if (userInput == "vis index") App.CurrentUser.ShowFriendsIndex();
             }
         }
 
