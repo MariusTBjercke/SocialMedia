@@ -11,7 +11,7 @@ namespace SocialMedia
         public int Age;
         public string Address;
         public bool Online;
-        private List<string> Friends = new List<string>();
+        private List<int> Friends = new List<int>();
 
         public Person(string firstName, string lastName, int age, string address, bool online)
         {
@@ -27,28 +27,33 @@ namespace SocialMedia
         {
             Console.Write("Navn på person du vil legge til som venn: ");
             var userInput = Console.ReadLine();
-            Friends.Add(userInput);
-            Console.WriteLine($"{userInput} ble lagt til i vennelisten.");
+            var index = App.Users.FindIndex(x => x.Name == userInput);
+            if (index != -1)
+            {
+                Friends.Add(index);
+                Console.WriteLine($"{userInput} ble lagt til i vennelisten.");
+            }
+            else Console.WriteLine("Fant ingen bruker med dette navnet.");
         }
 
         public void RemoveFriend()
         {
-            foreach (var friend in Friends)
+            foreach (var x in Friends)
             {
-                Console.WriteLine(friend);
+                Console.WriteLine(App.Users[x]);
             }
 
             Console.Write("Navn på venn: ");
             var userInput = Console.ReadLine();
-            Friends.Remove(userInput);
-            Console.WriteLine($"{userInput} ble slettet.");
+            Friends.Remove(Convert.ToInt32(userInput));
+            Console.WriteLine($"{App.Users[Convert.ToInt32(userInput)]} ble slettet.");
         }
 
         public void PrintFriends()
         {
-            foreach (var friend in Friends)
+            foreach (var x in Friends)
             {
-                Console.WriteLine(friend);
+                Console.WriteLine(App.Users[x]);
             }
         }
     }

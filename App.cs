@@ -5,14 +5,9 @@ namespace SocialMedia
 {
     public class App
     {
-        public string Name;
-        public bool LoggedIn;
-        public Person CurrentUser;
-        public List<Person> Users = new List<Person>();
-
-        public App(string name)
-        {
-            Name = name;
-        }
+        public static string Name;
+        public static bool LoggedIn;
+        public static Person CurrentUser;
+        public static List<Person> Users = new List<Person>();
     }
 }
