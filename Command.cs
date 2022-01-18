@@ -8,15 +8,13 @@ namespace SocialMedia
 {
     internal class Command
     {
-        public string _command;
-        public Action _method;
+        public string CommandStr;
+        public Action Method;
 
         public Command(string command, Action method)
         {
-            _command = command;
-            _method = method;
+            CommandStr = command;
+            Method = method;
         }
-
-
     }
 }

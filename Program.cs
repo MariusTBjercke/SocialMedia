@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using SocialMedia.Games.CSGO;
 
 namespace SocialMedia
 {
     internal class Program
     {
-
         static List<Command> Commands = new List<Command>();
 
         static void Main(string[] args)
         {
             Init();
+
+            //CounterStrike.StartGame();
+
+            //return;
 
             Console.WriteLine($"Velkommen til {App.Name}. Hvilken av de følgende brukerne vil du logge deg inn på?");
 
@@ -31,10 +35,10 @@ namespace SocialMedia
             {
                 WriteUsername();
                 var userInput = Console.ReadLine().ToLower();
-                var index = Commands.FindIndex(x => x._command == userInput);
+                var index = Commands.FindIndex(x => x.CommandStr == userInput);
                 if (index != -1)
                 {
-                    Commands[index]._method();
+                    Commands[index].Method();
                 }
                 else
                 {
@@ -49,8 +53,8 @@ namespace SocialMedia
             App.Users.AddRange(new List<Person>()
             {
                 new Person("Kenneth", "M", 25, "Veien203", false),
-                new Person("Marius", "B", 28, "Vegen200002", false),
-                new Person("John", "T", 30, "Kongevegen", false),
+                new Person("Marius", "B", 28, "Vegen202", false),
+                new Person("John", "T", 30, "Vegen204", false),
             });
             Console.OutputEncoding = Encoding.UTF8;
             AddUserCommands();
@@ -96,17 +100,10 @@ namespace SocialMedia
 
         static void ShowTips()
         {
-            var tipsList = new List<string>();
-            tipsList.AddRange(new List<string>()
-            {
-                "legg til venn",
-                "slett venn",
-                "vis venner",
-            });
             Console.WriteLine("Her er noen kommandoer du kan bruke:");
-            foreach (var tips in tipsList)
+            foreach (var command in Commands)
             {
-                Console.WriteLine(" - " + tips);
+                Console.WriteLine(" - " + command.CommandStr);
             }
         }
     }
