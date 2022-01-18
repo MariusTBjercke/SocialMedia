@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading.Tasks;
 using SocialMedia.Games.CSGO;
 
 namespace SocialMedia
@@ -9,12 +11,12 @@ namespace SocialMedia
     {
         static List<Command> Commands = new List<Command>();
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
+            await DrawIntro();
             Init();
 
             //CounterStrike.StartGame();
-
             //return;
 
             Console.WriteLine($"Velkommen til {App.Name}. Hvilken av de følgende brukerne vil du logge deg inn på?");
@@ -44,6 +46,24 @@ namespace SocialMedia
                     Console.WriteLine("Oops.. Forsøk en annen kommando.");
                 }
             }
+        }
+
+        private static async Task DrawIntro()
+        {
+            string logoText = AppLogoText();
+            await Graphics.DrawRectangle(50, 12, ConsoleColor.DarkBlue);
+            Console.SetCursorPosition(0, 0);
+            Console.ForegroundColor = ConsoleColor.White;
+
+            var textArray = logoText.ToCharArray();
+            foreach (var c in textArray)
+            {
+                Console.Write(c);
+                await Task.Delay(5);
+            }
+
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.SetCursorPosition(0, 12);
         }
 
         private static void Init()
@@ -78,7 +98,7 @@ namespace SocialMedia
         public static void GetUserInput(bool showName = true)
         {
             if (showName) Console.Write(App.CurrentUser.Name + ": ");
-            App.UserInput = Console.ReadLine().ToLower();
+            App.UserInput = Console.ReadLine()?.ToLower();
         }
 
         private static void Login()
@@ -107,5 +127,19 @@ namespace SocialMedia
                 Console.WriteLine(" - " + command.CommandStr);
             }
         }
+
+        static string AppLogoText()
+        {
+            return @"
+    ______ _            _           _         
+   |  ____(_)          | |         | |        
+   | |__   _  ____  ___| |__   ___ | | ____ _ 
+   |  __| | |/ _//\/ __| '_ \ / _ \| |/ / _` |
+   | |    | | (//) \__ \ |_) | (_) |   < (_| |
+   |_|    | |\//__/|___/_.__/ \___/|_|\_\__,_|
+         _/ |                                 
+        |__/
+";
+        }
     }
-}
+}                                  

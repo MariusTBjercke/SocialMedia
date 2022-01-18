@@ -8,8 +8,9 @@ namespace SocialMedia
     {
         public static string Name;
         public static bool LoggedIn;
-        public static Person CurrentUser = new Person(0, "User", "", 0, "", false);
-        public static List<Person> Users = new List<Person>();
+        public static Person CurrentUser = new Person(0, "Bruker", "", 0, "", false);
+        public static List<Person> Users = new();
+        public static List<Group> Groups = new();
         public static string UserInput;
     }
 }
