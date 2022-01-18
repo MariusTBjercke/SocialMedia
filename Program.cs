@@ -9,11 +9,11 @@ namespace SocialMedia
 {
     internal class Program
     {
-        static List<Command> Commands = new List<Command>();
+        static List<Command> Commands = new();
 
         static async Task Main(string[] args)
         {
-            await DrawIntro();
+            //await DrawLogo();
             Init();
 
             //CounterStrike.StartGame();
@@ -26,7 +26,7 @@ namespace SocialMedia
                 Console.WriteLine(user.Name);
             }
 
-            while (!App.LoggedIn)
+            while (!App.CurrentUser.Online)
             {
                 Login();
             }
@@ -39,16 +39,21 @@ namespace SocialMedia
                 var index = Commands.FindIndex(x => x.CommandStr == App.UserInput);
                 if (index != -1)
                 {
-                    Commands[index].Method();
+                    if (Commands[index].Admin)
+                    {
+                        if (App.CurrentUser.Admin) Commands[index].Method();
+                        else Console.WriteLine("Bruker må være administrator for å bruke denne kommandoen.");
+                    }
+                    else Commands[index].Method();
                 }
                 else
                 {
-                    Console.WriteLine("Oops.. Forsøk en annen kommando.");
+                    Console.WriteLine("Feil.. Forsøk en annen kommando.");
                 }
             }
         }
 
-        private static async Task DrawIntro()
+        public static async Task DrawLogo()
         {
             string logoText = AppLogoText();
             await Graphics.DrawRectangle(50, 12, ConsoleColor.DarkBlue);
@@ -66,16 +71,16 @@ namespace SocialMedia
             Console.SetCursorPosition(0, 12);
         }
 
-        private static void Init()
+        private static async void Init()
         {
             App.Name = "Fjøsboka";
             App.Users.AddRange(new List<Person>()
             {
-                new Person(1, "Kenneth", "M", 25, "Veien203", false),
-                new Person(2, "Marius", "B", 28, "Vegen202", false),
-                new Person(3, "John", "T", 30, "Vegen204", false),
-                new Person(4, "Petter", "T", 30, "Vegen204", false),
-                new Person(5, "Marcus", "R", 30, "Vegen204", false),
+                new Person(1, "Kenneth", "M", 25, "Veien201", false),
+                new Person(2, "Marius", "B", 28, "Veien202", false, true),
+                new Person(3, "John", "T", 30, "Veien203", false),
+                new Person(4, "Petter", "T", 30, "Veien204", false),
+                new Person(5, "Marcus", "R", 30, "Veien205", false),
             });
             Console.OutputEncoding = Encoding.UTF8;
             AddUserCommands();
@@ -89,19 +94,22 @@ namespace SocialMedia
                 new Command("legg til venn", App.CurrentUser.AddFriend),
                 new Command("slett venn", App.CurrentUser.RemoveFriend),
                 new Command("vis index", App.CurrentUser.ShowFriendsIndex),
-                new Command("lag gruppe", App.CurrentUser.AddGroup),
+                new Command("legg til gruppe", App.CurrentUser.AddGroup),
                 new Command("endre gruppe", App.CurrentUser.EditGroup),
                 new Command("bli med i gruppe", App.CurrentUser.JoinGroup),
+                new Command("vis grupper", App.CurrentUser.ShowGroups),
+                new Command("logg ut", App.CurrentUser.Logout),
+                new Command("vis intro", App.CurrentUser.ShowIntro, true),
             });
         }
 
-        public static void GetUserInput(bool showName = true)
+        public static void GetUserInput(bool showName = true, bool toLowerChars = true)
         {
             if (showName) Console.Write(App.CurrentUser.Name + ": ");
-            App.UserInput = Console.ReadLine()?.ToLower();
+            App.UserInput = toLowerChars ? Console.ReadLine()?.ToLower() : Console.ReadLine();
         }
 
-        private static void Login()
+        public static void Login()
         {
             GetUserInput();
             var match = App.Users.Exists(item => item.Name.ToLower() == App.UserInput);
@@ -110,7 +118,6 @@ namespace SocialMedia
                 var userIndex = App.Users.FindIndex(x => x.Name.ToLower() == App.UserInput);
                 App.CurrentUser = App.Users[userIndex];
                 App.CurrentUser.Online = true;
-                App.LoggedIn = true;
                 Console.WriteLine($"Du er nå logget inn som {App.CurrentUser.Name}");
             }
             else

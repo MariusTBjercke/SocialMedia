@@ -9,7 +9,7 @@ namespace SocialMedia
     internal class Group
     {
         public int Id;
-        public List<int> Members = new List<int>();
+        public List<int> Members = new();
         public string Name;
 
         public Group(int id, string name)

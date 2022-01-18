@@ -17,7 +17,7 @@ namespace SocialMedia
                 {
                     Draw(i, j, color);
                 }
-                // Må ha litt delay så programmet får tid til å tegne opp
+                // Needs a delay, otherwise it won't draw correctly
                 await Task.Delay(10);
             }
         }

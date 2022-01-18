@@ -10,11 +10,13 @@ namespace SocialMedia
     {
         public string CommandStr;
         public Action Method;
+        public bool Admin;
 
-        public Command(string command, Action method)
+        public Command(string command, Action method, bool admin = false)
         {
             CommandStr = command;
             Method = method;
+            Admin = admin;
         }
     }
 }
