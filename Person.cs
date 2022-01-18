@@ -75,7 +75,7 @@ namespace SocialMedia
             throw new NotImplementedException();
         }
 
-        public void PrintFriends()
+        public void ShowFriends()
         {
             Console.WriteLine("Dine venner:");
             foreach (var x in Friends)

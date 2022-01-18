@@ -64,7 +64,7 @@ namespace SocialMedia
         {
             Commands.AddRange(new List<Command>()
             {
-                new Command("vis venner", App.CurrentUser.PrintFriends),
+                new Command("vis venner", App.CurrentUser.ShowFriends),
                 new Command("legg til venn", App.CurrentUser.AddFriend),
                 new Command("slett venn", App.CurrentUser.RemoveFriend),
                 new Command("vis index", App.CurrentUser.ShowFriendsIndex),
