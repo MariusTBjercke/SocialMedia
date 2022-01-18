@@ -60,6 +60,21 @@ namespace SocialMedia
             }
         }
 
+        public void AddGroup()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void EditGroup()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void JoinGroup()
+        {
+            throw new NotImplementedException();
+        }
+
         public void PrintFriends()
         {
             Console.WriteLine("Dine venner:");

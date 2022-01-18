@@ -7,16 +7,11 @@ namespace SocialMedia
     internal class Program
     {
 
+        static List<Command> Commands = new List<Command>();
+
         static void Main(string[] args)
         {
-            Console.OutputEncoding = Encoding.UTF8;
-            App.Name = "Fjøsboka";
-            App.Users.AddRange(new List<Person>()
-            {
-                new Person("Kenneth", "M", 25, "Veien203", false),
-                new Person("Marius", "B", 28, "Vegen200002", false),
-                new Person("John", "T", 30, "Kongevegen", false),
-            });
+            Init();
 
             Console.WriteLine($"Velkommen til {App.Name}. Hvilken av de følgende brukerne vil du logge deg inn på?");
 
@@ -31,21 +26,58 @@ namespace SocialMedia
             }
 
             ShowTips();
-            
+
             while (true)
             {
+                WriteUsername();
                 var userInput = Console.ReadLine().ToLower();
-                if (userInput == "vis venner") App.CurrentUser.PrintFriends();
-                if (userInput == "legg til venn") App.CurrentUser.AddFriend();
-                if (userInput == "slett venn") App.CurrentUser.RemoveFriend();
-                if (userInput == "vis index") App.CurrentUser.ShowFriendsIndex();
-                if (userInput == "avslutt") break;
+                var index = Commands.FindIndex(x => x._command == userInput);
+                if (index != -1)
+                {
+                    Commands[index]._method();
+                }
+                else
+                {
+                    Console.WriteLine("Oops.. Forsøk en annen kommando.");
+                }
             }
+        }
+
+        private static void Init()
+        {
+            App.Name = "Fjøsboka";
+            App.Users.AddRange(new List<Person>()
+            {
+                new Person("Kenneth", "M", 25, "Veien203", false),
+                new Person("Marius", "B", 28, "Vegen200002", false),
+                new Person("John", "T", 30, "Kongevegen", false),
+            });
+            Console.OutputEncoding = Encoding.UTF8;
+            AddUserCommands();
+        }
+
+        static void AddUserCommands()
+        {
+            Commands.AddRange(new List<Command>()
+            {
+                new Command("vis venner", App.CurrentUser.PrintFriends),
+                new Command("legg til venn", App.CurrentUser.AddFriend),
+                new Command("slett venn", App.CurrentUser.RemoveFriend),
+                new Command("vis index", App.CurrentUser.ShowFriendsIndex),
+                new Command("lag gruppe", App.CurrentUser.AddGroup),
+                new Command("endre gruppe", App.CurrentUser.EditGroup),
+                new Command("bli med i gruppe", App.CurrentUser.JoinGroup),
+            });
+        }
+
+        static void WriteUsername()
+        {
+            Console.Write(App.CurrentUser.Name + ": ");
         }
 
         private static void Login()
         {
-            Console.Write(App.CurrentUser.Name + ": ");
+            WriteUsername();
             var userInput = Console.ReadLine().ToLower();
             var match = App.Users.Exists(item => item.Name.ToLower() == userInput);
             if (match)
