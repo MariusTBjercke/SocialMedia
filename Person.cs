@@ -5,6 +5,7 @@ namespace SocialMedia
 {
     internal class Person
     {
+        public int Id;
         public string FirstName;
         public string LastName;
         public string Name;
@@ -13,8 +14,9 @@ namespace SocialMedia
         public bool Online;
         private List<int> Friends = new List<int>();
 
-        public Person(string firstName, string lastName, int age, string address, bool online)
+        public Person(int id,string firstName, string lastName, int age, string address, bool online)
         {
+            Id = id;
             Name = firstName + lastName;
             FirstName = firstName;
             LastName = lastName;
@@ -26,11 +28,11 @@ namespace SocialMedia
         public void AddFriend()
         {
             Console.Write("Navn på person du vil legge til som venn: ");
-            var userInput = Console.ReadLine();
-            var index = App.Users.FindIndex(x => x.Name.ToLower() == userInput.ToLower());
+            Program.GetUserInput(false);
+            var index = App.Users.FindIndex(x => x.Name.ToLower() == App.UserInput);
             if (index != -1)
             {
-                Friends.Add(index);
+                Friends.Add(App.Users[index].Id);
                 Console.WriteLine($"{App.Users[index].Name} ble lagt til i vennelisten.");
             }
             else Console.WriteLine("Fant ingen bruker med dette navnet.");
@@ -47,11 +49,11 @@ namespace SocialMedia
         public void RemoveFriend()
         {
             Console.Write("Navn på venn du vil slette: ");
-            var userInput = Console.ReadLine();
-            var index = App.Users.FindIndex(x => x.Name.ToLower() == userInput.ToLower());
+            Program.GetUserInput(false);
+            var index = App.Users.FindIndex(x => x.Name.ToLower() == App.UserInput);
             if (index != -1)
             {
-                Friends.Remove(index);
+                Friends.Remove(App.Users[index].Id);
                 Console.WriteLine($"{App.Users[index].Name} ble slettet.");
             }
             else
@@ -62,7 +64,7 @@ namespace SocialMedia
 
         public void AddGroup()
         {
-            throw new NotImplementedException();
+            
         }
 
         public void EditGroup()
@@ -77,12 +79,16 @@ namespace SocialMedia
 
         public void ShowFriends()
         {
-            Console.WriteLine("Dine venner:");
-            foreach (var x in Friends)
+            if (Friends.Count > 0)
             {
-                Console.WriteLine(App.Users[x].Name);
+                Console.WriteLine("Dine venner:");
+                foreach (var friend in Friends)
+                {
+                    var index = App.Users.FindIndex(x => x.Id == friend);
+                    if (index != -1) Console.WriteLine(App.Users[index].Name);
+                }
             }
+            else Console.WriteLine("Du har ingen venner.");
         }
     }
-
 }

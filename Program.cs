@@ -33,9 +33,8 @@ namespace SocialMedia
 
             while (true)
             {
-                WriteUsername();
-                var userInput = Console.ReadLine().ToLower();
-                var index = Commands.FindIndex(x => x.CommandStr == userInput);
+                GetUserInput();
+                var index = Commands.FindIndex(x => x.CommandStr == App.UserInput);
                 if (index != -1)
                 {
                     Commands[index].Method();
@@ -52,9 +51,11 @@ namespace SocialMedia
             App.Name = "Fjøsboka";
             App.Users.AddRange(new List<Person>()
             {
-                new Person("Kenneth", "M", 25, "Veien203", false),
-                new Person("Marius", "B", 28, "Vegen202", false),
-                new Person("John", "T", 30, "Vegen204", false),
+                new Person(1, "Kenneth", "M", 25, "Veien203", false),
+                new Person(2, "Marius", "B", 28, "Vegen202", false),
+                new Person(3, "John", "T", 30, "Vegen204", false),
+                new Person(4, "Petter", "T", 30, "Vegen204", false),
+                new Person(5, "Marcus", "R", 30, "Vegen204", false),
             });
             Console.OutputEncoding = Encoding.UTF8;
             AddUserCommands();
@@ -74,19 +75,19 @@ namespace SocialMedia
             });
         }
 
-        static void WriteUsername()
+        public static void GetUserInput(bool showName = true)
         {
-            Console.Write(App.CurrentUser.Name + ": ");
+            if (showName) Console.Write(App.CurrentUser.Name + ": ");
+            App.UserInput = Console.ReadLine().ToLower();
         }
 
         private static void Login()
         {
-            WriteUsername();
-            var userInput = Console.ReadLine().ToLower();
-            var match = App.Users.Exists(item => item.Name.ToLower() == userInput);
+            GetUserInput();
+            var match = App.Users.Exists(item => item.Name.ToLower() == App.UserInput);
             if (match)
             {
-                var userIndex = App.Users.FindIndex(x => x.Name.ToLower() == userInput);
+                var userIndex = App.Users.FindIndex(x => x.Name.ToLower() == App.UserInput);
                 App.CurrentUser = App.Users[userIndex];
                 App.CurrentUser.Online = true;
                 App.LoggedIn = true;
