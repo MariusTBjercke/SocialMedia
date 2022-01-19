@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using SocialMedia.Games.CSGO;
@@ -13,7 +12,7 @@ namespace SocialMedia
 
         static async Task Main(string[] args)
         {
-            //await DrawLogo();
+            await DrawLogo();
             Init();
 
             //CounterStrike.StartGame();
@@ -69,18 +68,19 @@ namespace SocialMedia
 
             Console.BackgroundColor = ConsoleColor.Black;
             Console.SetCursorPosition(0, 12);
+            await Task.Delay(2000);
         }
 
-        private static async void Init()
+        private static void Init()
         {
             App.Name = "Fjøsboka";
-            App.Users.AddRange(new List<Person>()
+            App.Users.AddRange(new List<User>()
             {
-                new Person(1, "Kenneth", "M", 25, "Veien201", false),
-                new Person(2, "Marius", "B", 28, "Veien202", false, true),
-                new Person(3, "John", "T", 30, "Veien203", false),
-                new Person(4, "Petter", "T", 30, "Veien204", false),
-                new Person(5, "Marcus", "R", 30, "Veien205", false),
+                new User(1, "Kenneth", "M", "passord", 25, "Veien201", false),
+                new User(2, "Marius", "B", "passord", 28, "Veien202", false, true),
+                new User(3, "John", "T", "passord", 30, "Veien203", false),
+                new User(4, "Petter", "T", "passord", 30, "Veien204", false),
+                new User(5, "Marcus", "R", "passord", 30, "Veien205", false),
             });
             Console.OutputEncoding = Encoding.UTF8;
             AddUserCommands();
@@ -100,6 +100,8 @@ namespace SocialMedia
                 new Command("vis grupper", App.CurrentUser.ShowGroups),
                 new Command("logg ut", App.CurrentUser.Logout),
                 new Command("vis intro", App.CurrentUser.ShowIntro, true),
+                new Command("hjelp", ShowTips),
+                new Command("kommandoer", ShowTips),
             });
         }
 
@@ -116,9 +118,47 @@ namespace SocialMedia
             if (match)
             {
                 var userIndex = App.Users.FindIndex(x => x.Name.ToLower() == App.UserInput);
-                App.CurrentUser = App.Users[userIndex];
-                App.CurrentUser.Online = true;
-                Console.WriteLine($"Du er nå logget inn som {App.CurrentUser.Name}");
+
+                while (!App.CurrentUser.Online)
+                {
+                    Console.Write("Passord: ");
+                    App.UserInput = null;
+                    // Replace input with asterisks
+                    while (true)
+                    {
+                        var key = Console.ReadKey(true);
+                        if (key.Key == ConsoleKey.Enter)
+                        {
+                            Console.WriteLine();
+                            break;
+                        }
+                        if (key.Key == ConsoleKey.Backspace && App.UserInput.Length > 0)
+                        {
+                            App.UserInput = App.UserInput.Remove(App.UserInput.Length - 1, 1);
+                            Console.Write("\b \b");
+                        }
+                        else
+                        {
+                            App.UserInput += key.KeyChar;
+                            Console.Write("*");
+                        }
+                    }
+
+                    if (App.Users[userIndex].Password == App.UserInput)
+                    {
+                        App.CurrentUser = App.Users[userIndex];
+                        App.CurrentUser.Online = true;
+                        Graphics.SetTextColor(ConsoleColor.Green);
+                        Console.WriteLine($"Du er nå logget inn som {App.CurrentUser.Name}");
+                        Graphics.ResetTextColor();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Feil passord. Vennligst prøv igjen.");
+                    }
+                }
+
+                Graphics.ResetTextColor();
             }
             else
             {

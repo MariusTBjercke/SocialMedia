@@ -1,29 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SocialMedia
 {
-    internal class Person
+    internal class User
     {
-        public int Id;
-        public string FirstName;
-        public string LastName;
-        public string Name;
-        public int Age;
-        public string Address;
-        public bool Online;
-        public List<int> Friends = new();
-        public bool Admin;
+        public int Id { get; }
+        public string FirstName { get; }
+        public string LastName { get; }
+        public string Name { get; }
+        public string Password { get; }
+        public int Age { get; }
+        public string Address { get; }
+        public bool Online { get; set; }
+        public List<int> Friends { get; } = new();
+        public bool Admin { get; }
 
-        public Person(int id,string firstName, string lastName, int age, string address, bool online, bool admin = false)
+        public User(int id,string firstName, string lastName, string password, int age, string address, bool online, bool admin = false)
         {
             Id = id;
             Name = firstName + lastName;
             FirstName = firstName;
             LastName = lastName;
+            Password = password;
             Age = age;
             Address = address;
             Online = online;
@@ -105,8 +105,8 @@ namespace SocialMedia
                 {
                     var memberAmount = App.Groups[index].Members.Count;
                     Console.WriteLine(memberAmount > 1
-                        ? $"Gruppen {App.Groups[index].Name} har {memberAmount.ToString()} brukere. Disse er:"
-                        : $"Gruppen {App.Groups[index].Name} har {memberAmount.ToString()} bruker. Det er:");
+                        ? $"Gruppen '{App.Groups[index].Name}' har {memberAmount.ToString()} brukere. Disse er:"
+                        : $"Gruppen '{App.Groups[index].Name}' har {memberAmount.ToString()} bruker. Det er:");
                     foreach (var id in App.Groups[index].Members)
                     {
                         var userIndex = App.Users.FindIndex(x => x.Id == id);
@@ -118,7 +118,29 @@ namespace SocialMedia
 
         public void EditGroup()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Hvilken av disse gruppene vil du endre?");
+            App.Groups.ForEach(x => Console.WriteLine(x.Name));
+            Console.Write("Navn: ");
+            Program.GetUserInput(false);
+
+            var groupIndex = App.Groups.FindIndex(group => group.Name.ToLower() == App.UserInput);
+            if (groupIndex != -1)
+            {
+                Console.WriteLine($"Du har valgt gruppen '{App.Groups[groupIndex].Name}'. Hva ønsker du å endre?");
+                Console.WriteLine("1. Navn?");
+                Program.GetUserInput();
+                if (App.UserInput == "1")
+                {
+                    Console.Write("Nytt navn: ");
+                    Program.GetUserInput(false, false);
+                    App.Groups[groupIndex].ChangeName(App.UserInput);
+                    Console.WriteLine($"Navn ble endret til '{App.Groups[groupIndex].Name}'.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Fant ikke gruppe.");
+            }
         }
 
         public void JoinGroup()
@@ -161,8 +183,10 @@ namespace SocialMedia
 
         public void Logout()
         {
-            App.CurrentUser = new Person(0, "Bruker", "", 0, "", false);
+            App.CurrentUser = new User(0, "Bruker", "", "", 0, "", false);
+            Graphics.SetTextColor(ConsoleColor.Red);
             Console.WriteLine("Du er nå logget ut. Du kan logge inn ved å skrive inn navnet på en bruker.");
+            Graphics.ResetTextColor();
 
             while (!App.CurrentUser.Online)
             {

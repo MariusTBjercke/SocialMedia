@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SocialMedia
 {
     internal class Command
     {
-        public string CommandStr;
-        public Action Method;
-        public bool Admin;
+        public string CommandStr { get; set; }
+        public Action Method { get; set; }
+        public bool Admin { get; set; }
 
         public Command(string command, Action method, bool admin = false)
         {

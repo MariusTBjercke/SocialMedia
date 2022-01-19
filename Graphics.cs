@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialMedia
@@ -27,6 +24,21 @@ namespace SocialMedia
             Console.SetCursorPosition(x, y);
             Console.BackgroundColor = color;
             Console.Write(" ");
+        }
+
+        public static void SetTextColor(ConsoleColor color)
+        {
+            Console.ForegroundColor = color;
+        }
+
+        public static void SetBgColor(ConsoleColor color)
+        {
+            Console.BackgroundColor = color;
+        }
+
+        public static void ResetTextColor()
+        {
+            Console.ForegroundColor = ConsoleColor.White;
         }
     }
 }
