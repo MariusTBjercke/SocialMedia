@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace SocialMedia.Games.CSGO
 {
-    internal class Soldier
+    internal class Player
     {
         public string Name { get; set; }
         public bool IsDead { get; set; }
 
-        public Soldier(string name, bool isDead)
+        public Player(string name)
         {
             Name = name;
-            IsDead = isDead;
+            IsDead = false;
         }
     }
 }

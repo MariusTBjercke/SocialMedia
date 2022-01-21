@@ -6,13 +6,7 @@ using System.Threading.Tasks;
 
 namespace SocialMedia.Games.CSGO
 {
-    internal class Terrorists
+    internal class Command
     {
-        public List<Soldier> Members = new List<Soldier>();
-
-        public void FindBombSite()
-        {
-
-        }
     }
 }

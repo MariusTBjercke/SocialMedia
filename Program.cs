@@ -12,11 +12,12 @@ namespace SocialMedia
 
         static async Task Main(string[] args)
         {
+
+            await CounterStrike.StartGame();
+            return;
+
             await DrawLogo();
             Init();
-
-            //CounterStrike.StartGame();
-            //return;
 
             Console.WriteLine($"Velkommen til {App.Name}. Hvilken av de følgende brukerne vil du logge deg inn på?");
 
@@ -83,11 +84,6 @@ namespace SocialMedia
                 new User(5, "Marcus", "R", "passord", 30, "Veien205", false),
             });
             Console.OutputEncoding = Encoding.UTF8;
-            AddUserCommands();
-        }
-
-        static void AddUserCommands()
-        {
             Commands.AddRange(new List<Command>()
             {
                 new Command("vis venner", App.CurrentUser.ShowFriends),
@@ -114,11 +110,9 @@ namespace SocialMedia
         public static void Login()
         {
             GetUserInput();
-            var match = App.Users.Exists(item => item.Name.ToLower() == App.UserInput);
-            if (match)
+            var userIndex = App.Users.FindIndex(x => x.Name.ToLower() == App.UserInput);
+            if (userIndex != -1)
             {
-                var userIndex = App.Users.FindIndex(x => x.Name.ToLower() == App.UserInput);
-
                 while (!App.CurrentUser.Online)
                 {
                     Console.Write("Passord: ");
