@@ -3,52 +3,51 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace SocialMedia.Games.CSGO
 {
     internal class CounterTerrorist : Player
     {
+        public static Timer DefuseTimer;
+        public static bool IsBeingDefused;
 
         public CounterTerrorist(string name) : base(name)
         {
             
         }
 
-        public static async Task DefuseBomb()
+        public static void DefuseBomb()
         {
-            Console.WriteLine("The bomb is being defused...");
-            await Task.Delay(5000);
-            Console.WriteLine("The bomb has been defused...");
-            Console.WriteLine("Counter-terrorists win!");
-            CounterStrike.isDefused = true;
-            CounterStrike.gameEnded = true;
+            if (CounterStrike.IsSuccessful(10) && !IsBeingDefused)
+            {
+                Console.WriteLine("The bomb is being defused...");
+                DefuseTimer = new Timer();
+                DefuseTimer.Interval = 5000;
+                DefuseTimer.Elapsed += BombDefused;
+                DefuseTimer.AutoReset = false;
+                DefuseTimer.Enabled = true;
+                IsBeingDefused = true;
+            }
         }
 
-        public static async Task KillTerrorist(Player t, bool allDead, bool enemiesAlive)
+        private static void BombDefused(object sender, ElapsedEventArgs e)
         {
-            if (!enemiesAlive) return;
-            if (!CounterStrike.isPlanted && !allDead && CounterStrike.IsSuccessful(5))
+            Console.WriteLine("The bomb has been defused.");
+            Console.WriteLine("Counter-Terrorists win!");
+            Terrorist.BombTimer.Enabled = false;
+            CounterStrike.IsDefused = true;
+            CounterStrike.GameEnded = true;
+        }
+
+        public static void KillTerrorist(Player t)
+        {
+            if (CounterStrike.IsSuccessful(5))
             {
                 t.IsDead = true;
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(t.Name + " was killed.");
-                return;
-            }
-            else if (CounterStrike.isPlanted && allDead)
-            {
-                await DefuseBomb();
-                return;
-            }
-            else if (allDead && !CounterStrike.isPlanted)
-            {
-                Console.WriteLine("Counter-Terrorists win!");
-                CounterStrike.gameEnded = true;
-                return;
-            }
-            else if (!allDead && CounterStrike.IsSuccessful(3))
-            {
-                t.IsDead = true;
-                Console.WriteLine(t.Name + " was killed.");
-                return;
+                Console.ForegroundColor = ConsoleColor.White;
             }
         }
     }

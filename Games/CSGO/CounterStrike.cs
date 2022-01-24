@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Mime;
-using System.Text;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace SocialMedia.Games.CSGO
 {
@@ -11,51 +11,70 @@ namespace SocialMedia.Games.CSGO
     {
         static List<Player> T = new();
         static List<Player> CT = new();
-        public static bool isPlanted = false;
-        public static bool isDefused = false;
-        public static bool gameEnded = false;
-        public static int bombTimer = 0;
+        public static bool IsPlanted;
+        public static bool IsBeingPlanted;
+        public static bool IsDefused;
+        public static bool GameEnded;
 
         // Main
         public static async Task StartGame()
         {
             AddTeamMembers();
             Console.WriteLine("Game started.");
-            while (!gameEnded)
+            while (!GameEnded)
             {
-                await Terrorist.PlantBomb(T);
-                await PickRandomPlayer(CT, T, "CT dies");
-                await PickRandomPlayer(T, CT, "T dies");
+                Terrorist.PlantBomb();
+                if (IsAnyoneAlive(CT))
+                {
+                    if (IsPlanted) CounterTerrorist.DefuseBomb();
+                    if (IsAnyoneAlive(T))
+                    {
+                        Terrorist.KillCounterTerrorist(PickRandomPlayer(CT));
+                        CounterTerrorist.KillTerrorist(PickRandomPlayer(T));
+                    }
+                    else
+                    {
+                        if (!IsPlanted)
+                        {
+                            Console.WriteLine("Counter-Terrorists win!");
+                            GameEnded = true;
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Terrorists win!");
+                    GameEnded = true;
+                }
                 await Task.Delay(1000);
             }
 
             Console.WriteLine("Game over.");
         }
 
-        static async Task PickRandomPlayer(List<Player> playerList, List<Player> enemyList,string team)
+        private static bool IsAnyoneAlive(List<Player> team)
         {
-            Random rnd = new();
-            var teamAliveList = playerList.FindAll(x => x.IsDead == false).ToList();
-            var enemyAliveList = enemyList.FindAll(x => x.IsDead == false).ToList();
-            int index = rnd.Next(0, teamAliveList.Count);
-            int playerToKill = 0;
-            if (teamAliveList.Count > 0) playerToKill = playerList.FindIndex(x => x.Name == teamAliveList[index].Name);
-            bool enemiesAlive = enemyAliveList.Count > 0;
-            switch (team, teamAliveList.Count > 0)
+            var aliveList = team.FindAll(x => x.IsDead == false).ToList();
+            if (aliveList.Count > 0)
             {
-                case ("CT dies", true):
-                    Terrorist.KillCounterTerrorist(CT[playerToKill],false, enemiesAlive);
-                    break;
-                case ("T dies", true):
-                    await CounterTerrorist.KillTerrorist(T[playerToKill], false, enemiesAlive);
-                    break;
-                case ("T dies", false):
-                    await CounterTerrorist.KillTerrorist(T[playerToKill], true, enemiesAlive);
-                    break;
-                case ("CT dies", false):
-                    Terrorist.KillCounterTerrorist(CT[playerToKill], true, enemiesAlive);
-                    break;
+                return true;
             }
+            else
+            {
+                return false;
+            }
+        }
+
+        public static Player PickRandomPlayer(List<Player> enemyList)
+        {
+            var rnd = new Random();
+            // Check which players are still alive
+            var aliveList = enemyList.FindAll(x => x.IsDead == false).ToList();
+            var randomIndex = rnd.Next(0, aliveList.Count);
+            // Check the random name's correspondence with original enemy list
+            var enemyIndex = enemyList.FindIndex(x => x.Name == aliveList[randomIndex].Name);
+            // Return random player object
+            return enemyList[enemyIndex];
         }
 
         public static void MainMenu()
