@@ -52,7 +52,7 @@ namespace SocialMedia.Games.CSGO
             if (CounterStrike.IsSuccessful(7))
             {
                 ct.IsDead = true;
-                Console.ForegroundColor = ConsoleColor.Red;
+                Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine(ct.Name + " was killed.");
                 Console.ForegroundColor = ConsoleColor.White;
             }

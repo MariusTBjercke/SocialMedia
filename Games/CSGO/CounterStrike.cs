@@ -20,7 +20,7 @@ namespace SocialMedia.Games.CSGO
         public static async Task StartGame()
         {
             AddTeamMembers();
-            Console.WriteLine("Game started.");
+            Console.WriteLine("Match started.");
             while (!GameEnded)
             {
                 Terrorist.PlantBomb();
