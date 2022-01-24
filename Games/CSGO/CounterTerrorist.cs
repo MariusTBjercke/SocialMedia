@@ -9,7 +9,7 @@ namespace SocialMedia.Games.CSGO
 {
     internal class CounterTerrorist : Player
     {
-        public static Timer DefuseTimer;
+        public static Timer DefuseTimer = new();
         public static bool IsBeingDefused;
 
         public CounterTerrorist(string name) : base(name)
@@ -22,7 +22,6 @@ namespace SocialMedia.Games.CSGO
             if (CounterStrike.IsSuccessful(10) && !IsBeingDefused)
             {
                 Console.WriteLine("The bomb is being defused...");
-                DefuseTimer = new Timer();
                 DefuseTimer.Interval = 5000;
                 DefuseTimer.Elapsed += BombDefused;
                 DefuseTimer.AutoReset = false;

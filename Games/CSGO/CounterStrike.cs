@@ -19,6 +19,7 @@ namespace SocialMedia.Games.CSGO
         // Main
         public static async Task StartGame()
         {
+            ResetVars();
             AddTeamMembers();
             Console.WriteLine("Match started.");
             while (!GameEnded)
@@ -30,7 +31,7 @@ namespace SocialMedia.Games.CSGO
                     if (IsAnyoneAlive(T))
                     {
                         Terrorist.KillCounterTerrorist(PickRandomPlayer(CT));
-                        CounterTerrorist.KillTerrorist(PickRandomPlayer(T));
+                        if (IsAnyoneAlive(CT)) CounterTerrorist.KillTerrorist(PickRandomPlayer(T));
                     }
                     else
                     {
@@ -50,6 +51,24 @@ namespace SocialMedia.Games.CSGO
             }
 
             Console.WriteLine("Game over.");
+            Console.WriteLine(@"Skriv ""hjelp"" for å få opp kommandoer.");
+            StopTimers();
+        }
+
+        private static void ResetVars()
+        {
+            GameEnded = false;
+            IsPlanted = false;
+            IsBeingPlanted = false;
+            IsDefused = false;
+            CounterTerrorist.IsBeingDefused = false;
+        }
+
+        private static void StopTimers()
+        {
+            Terrorist.BombTimer.Enabled = false;
+            Terrorist.PlantedTimer.Enabled = false;
+            CounterTerrorist.DefuseTimer.Enabled = false;
         }
 
         private static bool IsAnyoneAlive(List<Player> team)
@@ -91,6 +110,10 @@ namespace SocialMedia.Games.CSGO
 
         static void AddTeamMembers()
         {
+            // Reset lists
+            T.Clear();
+            CT.Clear();
+
             // Terrorists
             T.AddRange(new List<Player>()
             {
@@ -100,6 +123,7 @@ namespace SocialMedia.Games.CSGO
                 new Terrorist("T-Burk"),
                 new Terrorist("T-Snurk"),
             });
+
             // Counter-Terrorists
             CT.AddRange(new List<Player>()
             {

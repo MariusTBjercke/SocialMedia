@@ -13,9 +13,6 @@ namespace SocialMedia
         static async Task Main(string[] args)
         {
 
-            await CounterStrike.StartGame();
-            return;
-
             await DrawLogo();
             Init();
 
@@ -44,7 +41,12 @@ namespace SocialMedia
                         if (App.CurrentUser.Admin) Commands[index].Method();
                         else Console.WriteLine("Bruker må være administrator for å bruke denne kommandoen.");
                     }
-                    else Commands[index].Method();
+                    else
+                    {
+                        // If method is async task - await.
+                        if (Commands[index].AsyncMethod != null) await Commands[index].AsyncMethod();
+                        else Commands[index].Method();
+                    }
                 }
                 else
                 {
@@ -72,7 +74,7 @@ namespace SocialMedia
             await Task.Delay(2000);
         }
 
-        private static void Init()
+        private static async Task Init()
         {
             App.Name = "Fjøsboka";
             App.Users.AddRange(new List<User>()
@@ -94,6 +96,7 @@ namespace SocialMedia
                 new Command("endre gruppe", App.CurrentUser.EditGroup),
                 new Command("bli med i gruppe", App.CurrentUser.JoinGroup),
                 new Command("vis grupper", App.CurrentUser.ShowGroups),
+                new Command("start counter-strike", CounterStrike.StartGame),
                 new Command("logg ut", App.CurrentUser.Logout),
                 new Command("vis intro", App.CurrentUser.ShowIntro, true),
                 new Command("hjelp", ShowTips),
